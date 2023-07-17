@@ -61,15 +61,16 @@ export const App = () => {
   useEffect (() => {
     if (firstRender.current) {
       firstRender.current = false;
-      setIsLoaderShow(true);
+      // setIsLoaderShow(true);
       return;
     } 
 
     // setIsLoaderShow(true);
 
     if (query !== '') {
-      setIsLoaderShow(false);
+      // setIsLoaderShow(false);
     async function fetchImages() {
+      setIsLoaderShow(true);
       await getImages(query, page)
       .then(response => {
         const lastPage = Math.ceil(response.totalHits / PER_PAGE);
@@ -88,11 +89,12 @@ export const App = () => {
           setIsLoadMoreShow(true);
         }
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log(error))
+      .finally(() => setIsLoaderShow(false));
   }
 
   fetchImages();
-  setIsLoaderShow(false);
+  // setIsLoaderShow(false);
 }
 }, [query, page]);
 
