@@ -54,14 +54,21 @@ export const App = () => {
     setLargeImage({src, alt});
   };
 
+  // useEffect(() => {
+  //   setIsLoaderShow(false);
+  // }, []);
+
   useEffect (() => {
     if (firstRender.current) {
       firstRender.current = false;
+      setIsLoaderShow(true);
       return;
     } 
 
-    setIsLoaderShow(true);
+    // setIsLoaderShow(true);
 
+    if (query !== '') {
+      setIsLoaderShow(false);
     async function fetchImages() {
       await getImages(query, page)
       .then(response => {
@@ -86,7 +93,7 @@ export const App = () => {
 
   fetchImages();
   setIsLoaderShow(false);
-
+}
 }, [query, page]);
 
     return (
