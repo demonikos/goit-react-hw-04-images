@@ -19,7 +19,7 @@ export const App = () => {
   const [isModalShow, setIsModalShow] = useState(false);
   const [isLoaderShow, setIsLoaderShow] = useState(false);
   const [isLoadMoreShow, setIsLoadMoreShow] = useState(false);
-  const firstRender = useRef (true);
+  const firstRender = useRef(true);
 
   const onSubmit = event => {
     const result = event.target.elements.input.value;
@@ -51,71 +51,59 @@ export const App = () => {
 
   const onClick = (src, alt) => {
     setIsModalShow(true);
-    setLargeImage({src, alt});
+    setLargeImage({ src, alt });
   };
 
-  // useEffect(() => {
-  //   setIsLoaderShow(false);
-  // }, []);
-
-  useEffect (() => {
+  useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
-      // setIsLoaderShow(true);
       return;
-    } 
-
-    // setIsLoaderShow(true);
+    }
 
     if (query !== '') {
-      // setIsLoaderShow(false);
-    async function fetchImages() {
-      setIsLoaderShow(true);
-      await getImages(query, page)
-      .then(response => {
-        const lastPage = Math.ceil(response.totalHits / PER_PAGE);
-        if (response.totalHits === 0) {
-          Notify.warning(
-            'Sorry, there are no images matching your search query. Please try again.'
-          );
-          setIsLoadMoreShow(false);
-        } else if (lastPage < page && lastPage !== 0) {
-          setIsLoadMoreShow(false);
-          Notify.info(
-            `We're sorry, but you've reached the end of search results.`
-          );
-        } else {
-          setImageList(prev => [...prev, ...response.hits]);
-          setIsLoadMoreShow(true);
-        }
-      })
-      .catch(error => console.log(error))
-      .finally(() => setIsLoaderShow(false));
-  }
+      async function fetchImages() {
+        setIsLoaderShow(true);
+        await getImages(query, page)
+          .then(response => {
+            const lastPage = Math.ceil(response.totalHits / PER_PAGE);
+            if (response.totalHits === 0) {
+              Notify.warning(
+                'Sorry, there are no images matching your search query. Please try again.'
+              );
+              setIsLoadMoreShow(false);
+            } else if (lastPage < page && lastPage !== 0) {
+              setIsLoadMoreShow(false);
+              Notify.info(
+                `We're sorry, but you've reached the end of search results.`
+              );
+            } else {
+              setImageList(prev => [...prev, ...response.hits]);
+              setIsLoadMoreShow(true);
+            }
+          })
+          .catch(error => console.log(error))
+          .finally(() => setIsLoaderShow(false));
+      }
 
-  fetchImages();
-  // setIsLoaderShow(false);
-}
-}, [query, page]);
+      fetchImages();
+    }
+  }, [query, page]);
 
-    return (
-      <>
-        <div className={css.App}>
-          <Searchbar onSubmit={onSubmit} />
-          {imageList && (
-            <ImageGallery imageList={imageList} onClick={onClick} />
-          )}
-          {isLoaderShow && <Loader/>}
-          {imageList && isLoadMoreShow && <Button onClick={loadMore} />}
-          {isModalShow && (
-            <Modal
-              src={largeImage.src}
-              alt={largeImage.alt}
-              // isModalShow={isModalShow}
-              closeModal={closeModal}
-            />
-          )}
-        </div>
-      </>
-    );
-  }
+  return (
+    <>
+      <div className={css.App}>
+        <Searchbar onSubmit={onSubmit} />
+        {imageList && <ImageGallery imageList={imageList} onClick={onClick} />}
+        {isLoaderShow && <Loader />}
+        {imageList && isLoadMoreShow && <Button onClick={loadMore} />}
+        {isModalShow && (
+          <Modal
+            src={largeImage.src}
+            alt={largeImage.alt}
+            closeModal={closeModal}
+          />
+        )}
+      </div>
+    </>
+  );
+};
